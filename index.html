@@ -14,7 +14,7 @@
     <meta property="og:url" content="https://bmc-masjid.github.io">
     <meta property="og:title" content="Bangladesh Muslim Center | Jame Masjid in Brooklyn, NY">
     <meta property="og:description" content="Serving the Kensington, Brooklyn community since 1994 with daily prayers, Jummah, Taraweeh, and special Eid services.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80">
+    <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Deobandi_masjid.tif/lossy-page1-3840px-Deobandi_masjid.tif.jpg">
 
     <script type="application/ld+json">
     {
@@ -24,7 +24,7 @@
       "alternateName": "Bangladesh Muslim Center Jame Masjid",
       "description": "Jame Masjid/Mosque located in the Kensington area of Brooklyn, NY. Serving our community for over three decades.",
       "url": "https://bmc-masjid.github.io",
-      "logo": "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=200&q=80",
+      "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Deobandi_masjid.tif/lossy-page1-3840px-Deobandi_masjid.tif.jpg",
       "foundingDate": "1994",
       "address": {
         "@type": "PostalAddress",
@@ -740,6 +740,35 @@ var maghribHourValue =
 /* =========================
    IE 9 AND BELOW DETECTION
 ========================= */
+        
+        function isRetroZilla() {
+    return /RetroZilla/i.test(navigator.userAgent); // if retrozilla updates ig illupdate this too but fornow good enouggh
+}
+        
+        function isKmeleon15OrBelow() {
+    var ua = navigator.userAgent;
+
+    // must be K-Meleon // forold  versions of the browser
+    var isKM = /K-Meleon\//i.test(ua);
+    if (!isKM) return false;
+
+    // extract version number
+    var match = ua.match(/K-Meleon\/([0-9.]+)/i);
+    if (!match) return false;
+
+    var ver = match[1];
+
+    // compare major.minor
+    var parts = ver.split(".");
+    var major = parseInt(parts[0], 10);
+    var minor = parseInt(parts[1] || "0", 10);
+
+    // 1.5.x and below
+    if (major < 1) return true;
+    if (major === 1 && minor <= 5) return true;
+
+    return false;
+}
 function isIE9OrBelow() {
     return document.documentMode && document.documentMode <= 9;
 }
@@ -815,6 +844,12 @@ function closeModal() {
 (function initIEFeature() {
 
     if (isIE9OrBelow()) {
+        document.getElementById("ie-only-container").style.display = "block";
+    }
+                                                              if (isKmeleon15OrBelow()) {
+        document.getElementById("ie-only-container").style.display = "block";
+    }
+                                                               if (isRetroZilla()) {
         document.getElementById("ie-only-container").style.display = "block";
     }
 
