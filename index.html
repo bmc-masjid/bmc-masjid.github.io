@@ -154,6 +154,16 @@
                 .nav-container { flex-direction: column; }
             }
         }
+      .icon-box {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    text-align: center;
+    line-height: 32px;
+    background-color: #1e293b;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
     </style>
 </head>
 <body class="text-gray-800 antialiased">
@@ -192,10 +202,52 @@
     </header>
 
     <section id="prayer-times" class="bg-white border-b border-gray-100 py-16" style="background-color: #ffffff; border-bottom: 1px solid #f3f4f6; padding: 48px 0;">
+     <div id="ie-only-container" style="display:none; text-align:center; margin:20px;">
+    <button onclick="showModal()"
+        style="background:#059669; color:#fff; border:0;
+        padding:10px 16px; font-weight:bold; cursor:pointer; border-radius:6px;">
+        View Prayer Times (for older browsers)
+    </button>
+</div>
+
+<div id="ie-overlay"
+     style="display:none; position:fixed; top:0; left:0;
+     width:100%; height:100%; background:#0f172a;
+     filter:alpha(opacity=80); opacity:0.8;
+     z-index:9998;">
+</div>
+
+<div id="ie-modal"
+     style="display:none; position:fixed;
+     top:20%; left:50%; margin-left:-140px;
+     width:280px;
+     background:#ffffff;
+     border:1px solid #e5e7eb;
+     border-radius:6px;
+     z-index:9999;
+     font-family:Arial;">
+
+    <div style="background:#059669; color:#fff;
+        padding:10px; font-weight:bold;">
+        Prayer Times (Fallback)
+    </div>
+
+    <div id="modal-times"
+         style="padding:12px; font-size:14px; line-height:1.6; color:#111827;">
+    </div>
+
+    <div style="text-align:right; padding:10px;">
+        <button onclick="closeModal()"
+            style="background:#0f172a; color:#fff;
+            border:0; padding:6px 10px; cursor:pointer;">
+            Close
+        </button>
+    </div>
+</div>
         <div class="max-w-6xl mx-auto px-4">
             <div class="text-center mb-10" style="text-align: center; margin-bottom: 32px;">
                 <h2 class="text-3xl font-bold text-gray-900 tracking-tight" style="font-size: 28px; color: #111827; font-weight: 700; margin: 0;">Prayer Timetable</h2>
-                <p class="text-gray-500 text-sm mt-1" id="current-date-display" style="color: #6b7280; font-size: 14px; margin-top: 4px;">Connecting to timetable feed...</p>
+                <p class="text-gray-500 text-sm mt-1" id="current-date-display" style="color: #6b7280; font-size: 14px; margin-top: 4px;">Calculating prayer times...</p>
             </div>
 
             <div class="grid-row" style="margin-bottom: 16px;">
@@ -297,7 +349,17 @@
                     <h3 class="text-xl font-bold text-white tracking-tight border-b border-slate-700 pb-3" style="font-size: 20px; font-weight: 700; border-bottom: 1px solid #334155; padding-bottom: 12px; margin-top: 0; margin-bottom: 24px;">Location & Contact</h3>
                     
                     <div class="grid-row" style="margin-bottom: 20px;">
-                        <div style="float: left; background-color: #1e293b; padding: 8px; border-radius: 8px; color: #34d399; width: 32px; text-align: center;"><i class="fa fa-map-marker"></i></div>
+<div class="grid-row" style="margin-bottom: 20px;">
+                       <div style="
+    width:32px;
+    height:32px;
+    background:#1e293b;
+                                   color: #34d399;
+    border-radius:8px;
+    text-align:center;
+    line-height:32px;
+    display:inline-block;
+">                          <i class="fa fa-map-marker"></i></div>
                         <div style="float: left; margin-left: 12px; width: 75%;">
                             <h4 style="font-weight: 600; font-size: 14px; color: #94a3b8; margin: 0;">Address</h4>
                             <p style="font-size: 14px; color: #e2e8f0; margin: 4px 0 0 0;">105 Cortelyou Road,<br>Brooklyn, NY 11218</p>
@@ -305,7 +367,23 @@
                     </div>
 
                     <div class="grid-row" style="margin-bottom: 20px;">
-                        <div style="float: left; background-color: #1e293b; padding: 8px; border-radius: 8px; color: #34d399; width: 32px; text-align: center;"><i class="fa fa-phone"></i></div>
+                       <div style="
+    width:32px;
+    height:32px;
+    background:#1e293b;
+                                   color: #34d399;
+    border-radius:8px;
+    text-align:center;
+    line-height:32px;
+    display:inline-block;
+">
+    <i class="fa fa-phone" style="
+        font-size:14px;
+        line-height:32px;
+        display:inline-block;
+        width:100%;
+    "></i>
+</div>
                         <div style="float: left; margin-left: 12px; width: 75%;">
                             <h4 style="font-weight: 600; font-size: 14px; color: #94a3b8; margin: 0;">Main Phone</h4>
                             <a href="tel:7184364210" style="font-size: 14px; color: #34d399; display: block; margin-top: 2px; text-decoration: none;">718-436-4210</a>
@@ -322,11 +400,9 @@
                         </div>
                     </div>
 
-                    <div style="padding-top: 16px; border-top: 1px solid #1e293b;">
-                        <a href="https://www.facebook.com/bmcnyc/" target="_blank" rel="noopener noreferrer" style="display: block; width: 100%; background-color: #1e293b; color: #ffffff; text-align: center; padding: 12px 0; border-radius: 8px; font-size: 14px; font-weight: 500; text-decoration: none;">
-                            <i class="fa fa-facebook"></i> Follow Official Facebook
-                        </a>
-                    </div>
+                    <a href="https://www.facebook.com/bmcnyc/" style="font-size: 14px; color: #34d399;" target="_blank" rel="noopener">
+    Visit our Facebook page
+</a>
                 </div>
             </div>
         </div>
@@ -402,88 +478,347 @@
             <p style="font-size: 12px; color: #4b5563; margin: 0;">&copy; 2026 Bangladesh Muslim Center. All Rights Reserved.</p>
         </div>
     </footer>
-
+<script src="https://praytimes.org/code/v1/js/PrayTime.js"></script>
+      
     <script type="text/javascript">
+      var isIE = !!document.documentMode; // true for IE8–11
+var ieVersion = document.documentMode || 999;
+var isIE9 = ieVersion === 9;
+var isLegacyIE = ieVersion < 10;
+                                
+      if (!window.JSON) {
+    window.JSON = {
+        parse: function (s) {
+            return eval('(' + s + ')');
+        }
+    };
+      if (!window.console) {
+    window.console = { log: function() {} };
+}
+      
+}
     (function() {
+      
+      var pt = new PrayTime();
+pt.setCalcMethod(pt.ISNA);
+      
+      pt.setTimeFormat(pt.Time12);
+        // Brooklyn Kensington Coordinates & Configuration
         var LATITUDE = 40.638421;
         var LONGITUDE = -73.978643;
+        
+        var FAJR_ANGLE = 15.0; // ISNA/North America standard calculation parameter
+        var ISHA_ANGLE = 15.0; 
 
-        // Converts standard "HH:MM" (24hr format) string into a localized AM/PM string
-        function convertToAMPM(timeString) {
-            if (!timeString) return "--:--";
-            // Cleans out accidental structural timezone additions from API returns (e.g., "05:12 (EST)")
-            var cleanTime = timeString.split(" ")[0];
-            var parts = cleanTime.split(":");
-            if (parts.length < 2) return "--:--";
-            
-            var hours = parseInt(parts[0], 10);
-            var minutes = parts[1];
-            var ampm = hours >= 12 ? 'PM' : 'AM';
-            
-            hours = hours % 12;
-            hours = hours ? hours : 12; // Evaluates hour '0' to '12'
-            
-            return hours + ":" + minutes + " " + ampm;
+        var d = new Date();
+        var year = d.getFullYear();
+        var month = d.getMonth() + 1;
+        var day = d.getDate();
+
+        // Update visual interface calendar UI elements
+        var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var displayElement = document.getElementById('current-date-display');
+        if(displayElement) {
+            displayElement.innerHTML = monthNames[d.getMonth()] + " " + day + ", " + year;
         }
 
-        function updateUIElement(id, value) {
-            var el = document.getElementById(id);
-            if (el) { el.innerHTML = value; }
-        }
+        // Detect timezone context offset reliably across platforms
+var jan = new Date(year, 0, 1);
+var jul = new Date(year, 6, 1);
 
-        function fetchPrayerTimes() {
-            var today = new Date();
-            var dateString = today.getDate() + "-" + (today.getMonth() + 1) + "-" + today.getFullYear();
-            
-            // Format dynamic date label
-            var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            var formattedDayLabel = today.toLocaleDateString('en-US', options);
-            updateUIElement('current-date-display', formattedDayLabel);
+var stdOffset = Math.max(
+    jan.getTimezoneOffset(),
+    jul.getTimezoneOffset()
+);
 
-            // Fetch dynamic calculations using the reliable Aladhan endpoint for NYC
-            var apiUrl = 'https://api.aladhan.com/v1/timings/' + dateString + '?latitude=' + LATITUDE + '&longitude=' + LONGITUDE + '&method=2';
+var dst = d.getTimezoneOffset() < stdOffset ? 1 : 0;
 
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', apiUrl, true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    try {
-                        var response = JSON.parse(xhr.responseText);
-                        var timings = response.data.timings;
+var timeZoneOffsetHours =
+    -new Date().getTimezoneOffset() / 60;
+        // Try using Modern Api Framework via Fetch Engine first
+      var apiURL = 'https://api.aladhan.com/v1/timings/' + day + '-' + month + '-' + year +
+             '?latitude=' + LATITUDE + '&longitude=' + LONGITUDE + '&method=2';
+      if (isLegacyIE) {
+    runLegacyCalculation();
+} else {
+getJSON(apiURL);
+      }     
+function getJSON(url, success, fail) {
+                                      
+    try {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
 
-                        // Parse 24-hr layout string maps into legible AM/PM updates
-                        updateUIElement('fajr-athan', convertToAMPM(timings.Fajr));
-                        updateUIElement('dhuhr-athan', convertToAMPM(timings.Dhuhr));
-                        updateUIElement('asr-athan', convertToAMPM(timings.Asr));
-                        updateUIElement('maghrib-athan', convertToAMPM(timings.Maghrib));
-                        updateUIElement('isha-athan', convertToAMPM(timings.Isha));
-
-                        // Maghrib iqamah rule fallback configuration (typically exactly 5 minutes after Athan)
-                        if (timings.Maghrib) {
-                            var maghribTime = new Date(today.toDateString() + ' ' + timings.Maghrib.split(" ")[0]);
-                            maghribTime.setMinutes(maghribTime.getMinutes());
-                            var maghribIqamahString = maghribTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-                            updateUIElement('maghrib-iqamah', maghribIqamahString);
-                        }
-
-                    } catch (e) {
-                        console.error("Error breaking down JSON stream payload: ", e);
-                        updateUIElement('current-date-display', "Error parsing timetable update feeds.");
-                    }
-                } else if (xhr.readyState === 4) {
-                    updateUIElement('current-date-display', "Failed to sync online schedules.");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    var json = JSON.parse(xhr.responseText);
+                    success(json);
+                } else {
+                    if (fail) fail();
                 }
-            };
-            xhr.send();
+            }
+        };
+
+        xhr.send();
+    } catch (e) {
+        if (fail) fail();
+    }
+}
+                 
+getJSON(apiURL,
+    function (json) {
+        if (json && json.data && json.data.timings) {
+            var times = json.data.timings;
+
+            renderTimes({
+                Fajr: convert24To12(times.Fajr),
+                Dhuhr: convert24To12(times.Dhuhr),
+                Asr: convert24To12(times.Asr),
+                Maghrib: convert24To12(times.Maghrib),
+                Isha: convert24To12(times.Isha)
+            }, "API");
+        } else {
+            runLegacyCalculation();
+        }
+    },
+    function () {
+        runLegacyCalculation();
+    }
+);
+                                           var now = new Date();
+
+function getTZ() {
+    return -(now.getTimezoneOffset() / 60);
+}
+               
+    function runLegacyCalculation() {
+    var tz = getTZ();
+
+    var times = pt.getPrayerTimes(
+        new Date(),
+        40.638421,     // Brooklyn latitude
+        -73.978643,    // Brooklyn longitude
+        tz
+    );
+
+    renderTimes({
+        Fajr: times[0],
+        Sunrise: times[1],
+        Dhuhr: times[2],
+        Asr: times[3],
+        Maghrib: times[5],
+        Isha: times[6]
+    }, "PrayTimes.js");
+}
+        function renderTimes(timesObj, driverName) {
+            document.getElementById('fajr-athan').innerHTML = timesObj.Fajr;
+            document.getElementById('dhuhr-athan').innerHTML = timesObj.Dhuhr;
+            document.getElementById('asr-athan').innerHTML = timesObj.Asr;
+            document.getElementById('maghrib-athan').innerHTML = timesObj.Maghrib;
+                  document.getElementById('maghrib-iqamah').innerHTML = timesObj.Maghrib;
+
+            document.getElementById('isha-athan').innerHTML = timesObj.Isha;
+            
+if (window.console && console.log) {
+                                           console.log("Prayer times successfully rendered via: " + driverName);
+            }
         }
 
-        // Run application sequence
-        if (document.addEventListener) {
-            document.addEventListener("DOMContentLoaded", fetchPrayerTimes, false);
-        } else {
-            window.onload = fetchPrayerTimes;
+        function convert24To12(timeStr) {
+            if(!timeStr) return "--:--";
+            var parts = timeStr.split(':');
+            var hours = parseInt(parts[0], 10);
+            var minutes = parts[1].substring(0, 2);
+            var suffix = hours >= 12 ? ' PM' : ' AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // conversion element rule for 0 hour flag
+            return hours + ':' + minutes + suffix;
+        }
+
+        /* --- HIGH ACCURACY MATHEMATICAL ENGINE ---
+           Calculates astronomical prayer occurrences conforming precisely to localized coordinates
+        */
+        function calculatePrayerTimesEngine(yr, mo, dy, lat, lng, tz) {
+            if (mo === 1 || mo === 2) {
+                yr = yr - 1;
+                mo = mo + 12;
+            }
+            
+            // Core Julian Calendar Epoch Operations
+            var A = Math.floor(yr / 100);
+            var B = 2 - A + Math.floor(A / 4);
+            var JD = Math.floor(365.25 * (yr + 4716)) + Math.floor(30.6001 * (mo + 1)) + dy + B - 1524.5;
+            
+            var dJD = JD - 2451545.0; // Century calculation component threshold tracking
+            
+            // Solar Position Coordinates Math Formulas 
+            var g = fixAngle(357.529 + 0.98560028 * dJD);
+            var q = fixAngle(280.459 + 0.98564736 * dJD);
+            var L = fixAngle(q + 1.915 * Math.sin(degToRad(g)) + 0.020 * Math.sin(degToRad(2 * g)));
+            
+            var R = 1.00014 - 0.01671 * Math.cos(degToRad(g)) - 0.00014 * Math.cos(degToRad(2 * g));
+            var e = 23.439 - 0.00000036 * dJD;
+            
+            var RA = radToDeg(Math.atan2(Math.cos(degToRad(e)) * Math.sin(degToRad(L)), Math.cos(degToRad(L)))) / 15;
+            RA = fixHour(RA);
+            
+            var Decl = radToDeg(Math.asin(Math.sin(degToRad(e)) * Math.sin(degToRad(L))));
+            var EqT = q / 15 - RA;
+            
+            // Compute Midday Dynamic Meridian (Dhuhr)
+            var midDay = fixHour(12 + tz - lng / 15 - EqT);
+            
+            // Twilight Horizon Hour Calculations
+            var fajrHourValue = midDay - regularT(FAJR_ANGLE, lat, Decl) / 15;
+            var ishaHourValue = midDay + regularT(ISHA_ANGLE, lat, Decl) / 15;
+            
+            // Asr Mathematical Derivation via Shadow Length Standard
+var asrFactor = 1; // Shafi, Maliki, Hanbali
+var angle = -radToDeg(
+    Math.atan(
+        1 / (asrFactor + Math.tan(Math.abs(degToRad(lat - Decl))))
+    )
+);
+
+var asrHourValue = midDay + regularT(angle, lat, Decl) / 15;
+            
+            // Maghrib Calculations incorporating refraction offset standard adjustments
+var maghribHourValue =
+    midDay + regularT(-0.833, lat, Decl) / 15;            
+            return {
+                Fajr: formatHourString(fajrHourValue),
+                Dhuhr: formatHourString(midDay),
+                Asr: formatHourString(asrHourValue),
+                Maghrib: formatHourString(maghribHourValue),
+                Isha: formatHourString(ishaHourValue)
+            };
+        }
+
+    function regularT(angle, lat, decl) {
+    var radLat = degToRad(lat);
+    var radDecl = degToRad(decl);
+    var radAngle = degToRad(angle);
+
+    var cosH =
+        (Math.sin(radAngle) -
+         Math.sin(radLat) * Math.sin(radDecl)) /
+        (Math.cos(radLat) * Math.cos(radDecl));
+
+    if (cosH > 1 || cosH < -1) return 0;
+
+    return radToDeg(Math.acos(cosH));
+}
+
+        function degToRad(deg) { return (deg * Math.PI) / 180.0; }
+        function radToDeg(rad) { return (rad * 180.0) / Math.PI; }
+        
+        function fixAngle(a) {
+            a = a - 360.0 * Math.floor(a / 360.0);
+            return a < 0 ? a + 360.0 : a;
+        }
+        
+        function fixHour(h) {
+            h = h - 24.0 * Math.floor(h / 24.0);
+            return h < 0 ? h + 24.0 : h;
+        }
+
+        function formatHourString(hourValue) {
+            if (isNaN(hourValue)) return "--:--";
+            hourValue = fixHour(hourValue + 0.5 / 60); // Apply mathematical rounded conversion parameter step
+            var h = Math.floor(hourValue);
+            var m = Math.floor((hourValue - h) * 60);
+            var suffix = h >= 12 ? ' PM' : ' AM';
+            h = h % 12;
+            h = h ? h : 12; 
+            return h + ':' + (m < 10 ? '0' + m : m) + suffix;
         }
     })();
     </script>
+      <script type="text/javascript">
+
+/* =========================
+   IE 9 AND BELOW DETECTION
+========================= */
+function isIE9OrBelow() {
+    return document.documentMode && document.documentMode <= 9;
+}
+
+/* =========================
+   PRAYTIMES FALLBACK (REAL LIB)
+========================= */
+function getPrayerTimesForModal() {
+
+    // use PrayTimes if available
+    if (typeof PrayTime !== "undefined") {
+
+        var pt = new PrayTime();
+        pt.setCalcMethod(pt.ISNA);
+        pt.setTimeFormat(pt.Time12);
+
+        var now = new Date();
+
+        var times = pt.getPrayerTimes(
+            now,
+            40.638421,
+            -73.978643,
+            -(now.getTimezoneOffset() / 60)
+        );
+
+        return {
+            Fajr: times[0],
+            Dhuhr: times[2],
+            Asr: times[3],
+            Maghrib: times[5],
+            Isha: times[6]
+        };
+    }
+
+    // hard fallback if library fails
+    return {
+        Fajr: "--",
+        Dhuhr: "--",
+        Asr: "--",
+        Maghrib: "--",
+        Isha: "--"
+    };
+}
+
+/* =========================
+   MODAL CONTROL
+========================= */
+function showModal() {
+
+    var t = getPrayerTimesForModal();
+
+    document.getElementById("modal-times").innerHTML =
+                              "Try to update your browser please." + "<br>" +
+                                        
+        "Fajr: " + t.Fajr + "<br>" +
+        "Dhuhr: " + t.Dhuhr + "<br>" +
+        "Asr: " + t.Asr + "<br>" +
+        "Maghrib: " + t.Maghrib + "<br>" +
+        "Isha: " + t.Isha;
+
+    document.getElementById("ie-modal").style.display = "block";
+    document.getElementById("ie-overlay").style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("ie-modal").style.display = "none";
+    document.getElementById("ie-overlay").style.display = "none";
+}
+
+/* =========================
+   INIT
+========================= */
+(function initIEFeature() {
+
+    if (isIE9OrBelow()) {
+        document.getElementById("ie-only-container").style.display = "block";
+    }
+
+})();
+</script>
 </body>
 </html>
