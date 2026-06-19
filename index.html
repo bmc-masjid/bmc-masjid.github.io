@@ -737,188 +737,300 @@ var maghribHourValue =
         }
     })();
     </script>
-      <script type="text/javascript">
+     <script type="text/javascript">
+(function () {
 
-/* =========================
-   IE 9 AND BELOW DETECTION
-========================= */
-        
-        function isRetroZilla() {
-    return /RetroZilla/i.test(navigator.userAgent); // if retrozilla updates ig illupdate this too but fornow good enouggh
-}
-        
-        function isKmeleon15OrBelow() {
-    var ua = navigator.userAgent;
+    /* =========================
+       BASIC IE DETECTION
+    ========================= */
 
-    // must be K-Meleon // forold  versions of the browser
-    var isKM = /K-Meleon\//i.test(ua);
-    if (!isKM) return false;
+    function getIEVersion() {
+        var ua = navigator.userAgent;
 
-    // extract version number
-    var match = ua.match(/K-Meleon\/([0-9.]+)/i);
-    if (!match) return false;
+        if (document.documentMode) {
+            return document.documentMode;
+        }
 
-    var ver = match[1];
+        var match = ua.match(/MSIE\s(\d+\.\d+)/);
+        if (match) return parseFloat(match[1]);
 
-    // compare major.minor
-    var parts = ver.split(".");
-    var major = parseInt(parts[0], 10);
-    var minor = parseInt(parts[1] || "0", 10);
-
-    // 1.5.x and below
-    if (major < 1) return true;
-    if (major === 1 && minor <= 5) return true;
-
-    return false;
-}
-        
-        function isFirefox35OrBelow() {
-    var ua = navigator.userAgent;
-    var match = ua.match(/Firefox\/([0-9.]+)/i);
-    if (!match) return false;
-
-    var ver = match[1];
-    if (!ver) return false;
-
-    var parts = ver.split(".");
-    var major = parseInt(parts[0], 10);
-    var minor = parseInt(parts[1] || "0", 10);
-
-    if (major < 3) return true;
-    if (major === 3 && minor <= 5) return true;
-
-    return false;
-}
-          function getIEVersion() {
-    var ua = navigator.userAgent;
-
-    // IE 10+ (rare legacy cases)
-    if (document.documentMode) {
-        return document.documentMode;
+        return null;
     }
 
-    // IE 7–9
-    var match = ua.match(/MSIE\s(\d+\.\d+)/);
-    if (match) {
-        return parseFloat(match[1]);
+    function isLegacyIE() {
+        var ver = getIEVersion();
+        return ver !== null && ver <= 9;
     }
 
-    // IE 6 fallback (sometimes only "MSIE 6.0" appears)
-    match = ua.match(/MSIE\s6\.0/);
-    if (match) {
-        return 6;
+    function isIE9OrBelow() {
+        var ver = getIEVersion();
+        return ver !== null && ver <= 9;
     }
 
-    return null; // not IE
-}
+    function isKmeleon15OrBelow() {
+        var ua = navigator.userAgent;
+        var isKM = /K-Meleon\//i.test(ua);
+        if (!isKM) return false;
 
-function isLegacyIE() {
-    var ver = getIEVersion();
+        var match = ua.match(/K-Meleon\/([0-9.]+)/i);
+        if (!match) return false;
 
-    // Any IE ≤ 9
-    if (ver && ver <= 9) return true;
+        var ver = match[1].split(".");
+        var major = parseInt(ver[0], 10);
+        var minor = parseInt(ver[1] || "0", 10);
 
-    // Extra safety nets for very old engines
-    return (
-        !!document.all &&          // IE ≤ 11 compatibility marker
-        !window.atob               // very old browsers often missing modern APIs
-    );
-}
+        return (major < 1 || (major === 1 && minor <= 5));
+    }
 
-function isIE9OrBelow() {
-    var ver = getIEVersion();
-    return ver !== null && ver <= 9;
-}
+    function isFirefox35OrBelow() {
+        var ua = navigator.userAgent;
+        var match = ua.match(/Firefox\/([0-9.]+)/i);
+        if (!match) return false;
 
-function isIE7OrBelow() {
-    var ver = getIEVersion();
-    return ver !== null && ver <= 7;
-}
+        var parts = match[1].split(".");
+        var major = parseInt(parts[0], 10);
+        var minor = parseInt(parts[1] || "0", 10);
 
-/* =========================
-   PRAYTIMES FALLBACK (REAL LIB)
-========================= */
-function getPrayerTimesForModal() {
+        return (major < 3 || (major === 3 && minor <= 5));
+    }
 
-    // use PrayTimes if available
+    function isRetroZilla() {
+        return /RetroZilla/i.test(navigator.userAgent);
+    }
+
+    /* =========================
+       PRAYTIME INIT
+    ========================= */
+
+    var pt = null;
     if (typeof PrayTime !== "undefined") {
-
-        var pt = new PrayTime();
+        pt = new PrayTime();
         pt.setCalcMethod(pt.ISNA);
         pt.setTimeFormat(pt.Time12);
+    }
+
+    var LAT = 40.638421;
+    var LNG = -73.978643;
+
+    /* =========================
+       DATE DISPLAY
+    ========================= */
+
+    function updateDate() {
+        var d = new Date();
+
+        var monthNames = [
+            "January","February","March","April","May","June",
+            "July","August","September","October","November","December"
+        ];
+
+        var el = document.getElementById("current-date-display");
+        if (el) {
+            el.innerHTML = monthNames[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+        }
+    }
+
+    /* =========================
+       RENDER FUNCTION
+    ========================= */
+
+    function renderTimes(t) {
+        var set = function (id, val) {
+            var el = document.getElementById(id);
+            if (el) el.innerHTML = val || "--:--";
+        };
+
+        set("fajr-athan", t.Fajr);
+        set("dhuhr-athan", t.Dhuhr);
+        set("asr-athan", t.Asr);
+        set("maghrib-athan", t.Maghrib);
+        set("isha-athan", t.Isha);
+    }
+
+    /* =========================
+       CONVERSION HELPERS
+    ========================= */
+
+    function convert24To12(str) {
+        if (!str) return "--:--";
+
+        var parts = str.split(":");
+        var h = parseInt(parts[0], 10);
+        var m = parts[1].substring(0, 2);
+
+        var suffix = h >= 12 ? " PM" : " AM";
+        h = h % 12;
+        if (h === 0) h = 12;
+
+        return h + ":" + m + suffix;
+    }
+
+    /* =========================
+       API FETCH (IE SAFE)
+    ========================= */
+
+    function getJSON(url, success, fail) {
+        try {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", url, true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            var json = JSON.parse(xhr.responseText);
+                            success && success(json);
+                        } catch (e) {
+                            fail && fail(e);
+                        }
+                    } else {
+                        fail && fail();
+                    }
+                }
+            };
+
+            xhr.send();
+        } catch (e) {
+            fail && fail(e);
+        }
+    }
+
+    /* =========================
+       LEGACY CALCULATION
+    ========================= */
+
+    function runLegacyCalculation() {
+        if (!pt) return;
 
         var now = new Date();
+        var tz = -now.getTimezoneOffset() / 60;
 
-        var times = pt.getPrayerTimes(
-            now,
-            40.638421,
-            -73.978643,
-            -(now.getTimezoneOffset() / 60)
-        );
+        var times = pt.getPrayerTimes(now, LAT, LNG, tz);
 
-        return {
+        renderTimes({
             Fajr: times[0],
             Dhuhr: times[2],
             Asr: times[3],
             Maghrib: times[5],
             Isha: times[6]
+        });
+
+        console.log("Prayer times loaded via legacy engine");
+    }
+
+    /* =========================
+       MODERN API CALCULATION
+    ========================= */
+
+    function runAPICalculation() {
+        var d = new Date();
+        var day = d.getDate();
+        var month = d.getMonth() + 1;
+        var year = d.getFullYear();
+
+        var url =
+            "https://api.aladhan.com/v1/timings/" +
+            day + "-" + month + "-" + year +
+            "?latitude=" + LAT +
+            "&longitude=" + LNG +
+            "&method=2";
+
+        getJSON(
+            url,
+            function (json) {
+                if (json && json.data && json.data.timings) {
+                    var t = json.data.timings;
+
+                    renderTimes({
+                        Fajr: convert24To12(t.Fajr),
+                        Dhuhr: convert24To12(t.Dhuhr),
+                        Asr: convert24To12(t.Asr),
+                        Maghrib: convert24To12(t.Maghrib),
+                        Isha: convert24To12(t.Isha)
+                    });
+
+                    console.log("Prayer times loaded via API");
+                } else {
+                    runLegacyCalculation();
+                }
+            },
+            function () {
+                runLegacyCalculation();
+            }
+        );
+    }
+
+    /* =========================
+       MODAL (LEGACY IE)
+    ========================= */
+
+    function getPrayerTimesForModal() {
+        if (!pt) return null;
+
+        var now = new Date();
+        var tz = -now.getTimezoneOffset() / 60;
+
+        var t = pt.getPrayerTimes(now, LAT, LNG, tz);
+
+        return {
+            Fajr: t[0],
+            Dhuhr: t[2],
+            Asr: t[3],
+            Maghrib: t[5],
+            Isha: t[6]
         };
     }
 
-    // hard fallback if library fails
-    return {
-        Fajr: "--",
-        Dhuhr: "--",
-        Asr: "--",
-        Maghrib: "--",
-        Isha: "--"
+    window.showModal = function () {
+        var t = getPrayerTimesForModal();
+
+        var el = document.getElementById("modal-times");
+        if (el) {
+            el.innerHTML =
+                "Fajr: " + (t ? t.Fajr : "--") + "<br>" +
+                "Dhuhr: " + (t ? t.Dhuhr : "--") + "<br>" +
+                "Asr: " + (t ? t.Asr : "--") + "<br>" +
+                "Maghrib: " + (t ? t.Maghrib : "--") + "<br>" +
+                "Isha: " + (t ? t.Isha : "--");
+        }
+
+        document.getElementById("ie-modal").style.display = "block";
+        document.getElementById("ie-overlay").style.display = "block";
     };
-}
 
-/* =========================
-   MODAL CONTROL
-========================= */
-function showModal() {
+    window.closeModal = function () {
+        document.getElementById("ie-modal").style.display = "none";
+        document.getElementById("ie-overlay").style.display = "none";
+    };
 
-    var t = getPrayerTimesForModal();
+    /* =========================
+       INIT (SAFE BOOT)
+    ========================= */
 
-    document.getElementById("modal-times").innerHTML =
-                              "Try to update your browser please." + "<br>" +
-                                        
-        "Fajr: " + t.Fajr + "<br>" +
-        "Dhuhr: " + t.Dhuhr + "<br>" +
-        "Asr: " + t.Asr + "<br>" +
-        "Maghrib: " + t.Maghrib + "<br>" +
-        "Isha: " + t.Isha;
+    function init() {
+        updateDate();
 
-    document.getElementById("ie-modal").style.display = "block";
-    document.getElementById("ie-overlay").style.display = "block";
-}
+        try {
+            if (isLegacyIE()) {
+                runLegacyCalculation();
+            } else {
+                runAPICalculation();
+            }
+        } catch (e) {
+            console.log("Init error, falling back", e);
+            runLegacyCalculation();
+        }
 
-function closeModal() {
-    document.getElementById("ie-modal").style.display = "none";
-    document.getElementById("ie-overlay").style.display = "none";
-}
-
-/* =========================
-   INIT
-========================= */
-(function initIEFeature() {
-
-    if (isLegacyIE()) {
-    runLegacyCalculation();
-}
-    if (isIE9OrBelow()) {
-        document.getElementById("ie-only-container").style.display = "block";
+        if (isIE9OrBelow() || isKmeleon15OrBelow() || isFirefox35OrBelow() || isRetroZilla()) {
+            var el = document.getElementById("ie-only-container");
+            if (el) el.style.display = "block";
+        }
     }
-                                                              if (isKmeleon15OrBelow()) {
-        document.getElementById("ie-only-container").style.display = "block";
-    }
-                                                                if (isFirefox35OrBelow()) {
-        document.getElementById("ie-only-container").style.display = "block";
-    }
-                                                               if (isRetroZilla()) {
-        document.getElementById("ie-only-container").style.display = "block";
+
+    if (document.addEventListener) {
+        document.addEventListener("DOMContentLoaded", init);
+    } else {
+        window.onload = init;
     }
 
 })();
