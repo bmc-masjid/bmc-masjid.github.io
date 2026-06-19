@@ -789,8 +789,50 @@ var maghribHourValue =
 
     return false;
 }
+          function getIEVersion() {
+    var ua = navigator.userAgent;
+
+    // IE 10+ (rare legacy cases)
+    if (document.documentMode) {
+        return document.documentMode;
+    }
+
+    // IE 7–9
+    var match = ua.match(/MSIE\s(\d+\.\d+)/);
+    if (match) {
+        return parseFloat(match[1]);
+    }
+
+    // IE 6 fallback (sometimes only "MSIE 6.0" appears)
+    match = ua.match(/MSIE\s6\.0/);
+    if (match) {
+        return 6;
+    }
+
+    return null; // not IE
+}
+
+function isLegacyIE() {
+    var ver = getIEVersion();
+
+    // Any IE ≤ 9
+    if (ver && ver <= 9) return true;
+
+    // Extra safety nets for very old engines
+    return (
+        !!document.all &&          // IE ≤ 11 compatibility marker
+        !window.atob               // very old browsers often missing modern APIs
+    );
+}
+
 function isIE9OrBelow() {
-    return document.documentMode && document.documentMode <= 9;
+    var ver = getIEVersion();
+    return ver !== null && ver <= 9;
+}
+
+function isIE7OrBelow() {
+    var ver = getIEVersion();
+    return ver !== null && ver <= 7;
 }
 
 /* =========================
@@ -863,6 +905,9 @@ function closeModal() {
 ========================= */
 (function initIEFeature() {
 
+    if (isLegacyIE()) {
+    runLegacyCalculation();
+}
     if (isIE9OrBelow()) {
         document.getElementById("ie-only-container").style.display = "block";
     }
