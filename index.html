@@ -617,8 +617,10 @@ function getTZ() {
             document.getElementById('fajr-athan').innerHTML = timesObj.Fajr;
             document.getElementById('dhuhr-athan').innerHTML = timesObj.Dhuhr;
             document.getElementById('asr-athan').innerHTML = timesObj.Asr;
-            document.getElementById('maghrib-athan').innerHTML = timesObj.Maghrib;
-                  document.getElementById('maghrib-iqamah').innerHTML = timesObj.Maghrib;
+         var maghrib = timesObj.Maghrib || document.getElementById('maghrib-athan').innerHTML;
+
+document.getElementById('maghrib-athan').innerHTML = maghrib;
+document.getElementById('maghrib-iqamah').innerHTML = maghrib;
 
             document.getElementById('isha-athan').innerHTML = timesObj.Isha;
             
