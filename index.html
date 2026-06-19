@@ -782,10 +782,23 @@ var maghribHourValue =
 }
 
 function isOldOpera() {
-    var ver = getOperaVersion();
-    if (ver === null) return false;
+    var ua = navigator.userAgent;
 
-    return ver <= 11.5;
+    // Old Presto Opera
+    var isPrestoOpera = ua.indexOf("Presto") > -1;
+
+    // Very old Opera (legacy string)
+    var isLegacyOpera = ua.indexOf("Opera") > -1;
+
+    // Modern Opera (Chromium-based)
+    var isChromiumOpera = ua.indexOf("OPR/") > -1;
+
+    // Only treat Presto/legacy as "old"
+    return (isPrestoOpera || isLegacyOpera) && !isChromiumOpera;
+}
+
+    function isModernBrowser() {
+    return !!(window.fetch && window.Promise && document.querySelector);
 }
 
 function isSupportedOpera() {
@@ -1042,7 +1055,7 @@ function isSupportedOpera() {
 
     try {
         if (
-            isLegacyIE() ||
+            isLegacyIE() || isOldOpera() || isModernBrowser() ||
             isIE9OrBelow() ||
             isKmeleon15OrBelow() ||
             isFirefox35OrBelow() ||
@@ -1059,7 +1072,7 @@ function isSupportedOpera() {
     }
 
     if (
-        isIE9OrBelow() ||
+        isIE9OrBelow() || isOldOpera() ||
         isKmeleon15OrBelow() ||
         isFirefox35OrBelow() ||
         isRetroZilla() ||
