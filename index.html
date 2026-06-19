@@ -276,7 +276,7 @@
                     <div class="bg-emerald-50 p-5 rounded-card border border-emerald-200 text-center" style="background-color: #ecfdf5; padding: 20px; border: 1px solid #a7f3d0; text-align: center; border-radius: 12px; margin-bottom: 8px;">
                         <h3 class="font-bold text-gray-900 text-base" style="font-weight: 700; font-size: 16px; margin: 0;">Maghrib</h3>
                         <div class="mt-2 text-xs text-gray-500" style="margin-top: 8px; font-size: 12px; color: #6b7280;">Athan: <span id="maghrib-athan" class="font-medium text-gray-800" style="color: #1f2937; font-weight: 500;">--:--</span></div>
-                        <div class="mt-1 text-sm font-semibold text-emerald-700" style="margin-top: 4px; font-size: 14px; font-weight: 600; color: #047857;">Iqamah: <span id="maghrib-athan">--:--</span></div>
+                        <div class="mt-1 text-sm font-semibold text-emerald-700" style="margin-top: 4px; font-size: 14px; font-weight: 600; color: #047857;">Iqamah: <span id="maghrib-iqamah">--:--</span></div>
                     </div>
                 </div>
                 <div class="col-base col-sm-half col-md-5">
@@ -617,12 +617,15 @@ function getTZ() {
             document.getElementById('fajr-athan').innerHTML = timesObj.Fajr;
             document.getElementById('dhuhr-athan').innerHTML = timesObj.Dhuhr;
             document.getElementById('asr-athan').innerHTML = timesObj.Asr;
-      var maghrib = timesObj.Maghrib;
-if (!maghrib) maghrib = timesObj.Maghrib || "--:--";
+    var maghrib = timesObj.Maghrib;
 
+// write athan first
 document.getElementById('maghrib-athan').innerHTML = maghrib;
-document.getElementById('maghrib-iqamah').innerHTML = maghrib;
 
+// IE6 safety: re-read AFTER write, not immediately
+var fixedMaghrib = document.getElementById('maghrib-athan').innerHTML;
+
+document.getElementById('maghrib-iqamah').innerHTML = fixedMaghrib;
             document.getElementById('isha-athan').innerHTML = timesObj.Isha;
             
 if (window.console && console.log) {
