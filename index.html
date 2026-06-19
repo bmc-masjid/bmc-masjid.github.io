@@ -613,7 +613,7 @@ function getTZ() {
         Isha: times[6]
     }, "PrayTimes.js");
 }
-        function renderTimes(timesObj, driverName) {
+    /*    function renderTimes(timesObj, driverName) {
             document.getElementById('fajr-athan').innerHTML = timesObj.Fajr;
             document.getElementById('dhuhr-athan').innerHTML = timesObj.Dhuhr;
             document.getElementById('asr-athan').innerHTML = timesObj.Asr;
@@ -626,7 +626,7 @@ document.getElementById('maghrib-iqamah').innerHTML = maghrib;
 if (window.console && console.log) {
                                            console.log("Prayer times successfully rendered via: " + driverName);
             }
-        }
+        } */
 
         function convert24To12(timeStr) {
             if(!timeStr) return "--:--";
@@ -835,19 +835,21 @@ var maghribHourValue =
        RENDER FUNCTION
     ========================= */
 
-    function renderTimes(t) {
-        var set = function (id, val) {
-            var el = document.getElementById(id);
-            if (el) el.innerHTML = val || "--:--";
-        };
+ function renderTimes(t) {
+    var set = function (id, val) {
+        var el = document.getElementById(id);
+        if (el) el.innerHTML = val || "--:--";
+    };
 
-        set("fajr-athan", t.Fajr);
-        set("dhuhr-athan", t.Dhuhr);
-        set("asr-athan", t.Asr);
-        set("maghrib-athan", t.Maghrib);
-        set("isha-athan", t.Isha);
-    }
+    set("fajr-athan", t.Fajr);
+    set("dhuhr-athan", t.Dhuhr);
+    set("asr-athan", t.Asr);
 
+    set("maghrib-athan", t.Maghrib);
+    set("maghrib-iqamah", t.Maghrib); // <-- FIX
+
+    set("isha-athan", t.Isha);
+}
     /* =========================
        CONVERSION HELPERS
     ========================= */
