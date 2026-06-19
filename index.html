@@ -769,6 +769,24 @@ var maghribHourValue =
 
     return false;
 }
+        
+        function isFirefox35OrBelow() {
+    var ua = navigator.userAgent;
+    var match = ua.match(/Firefox\/([0-9.]+)/i);
+    if (!match) return false;
+
+    var ver = match[1];
+    if (!ver) return false;
+
+    var parts = ver.split(".");
+    var major = parseInt(parts[0], 10);
+    var minor = parseInt(parts[1] || "0", 10);
+
+    if (major < 3) return true;
+    if (major === 3 && minor <= 5) return true;
+
+    return false;
+}
 function isIE9OrBelow() {
     return document.documentMode && document.documentMode <= 9;
 }
@@ -847,6 +865,9 @@ function closeModal() {
         document.getElementById("ie-only-container").style.display = "block";
     }
                                                               if (isKmeleon15OrBelow()) {
+        document.getElementById("ie-only-container").style.display = "block";
+    }
+                                                                if (isFirefox35OrBelow()) {
         document.getElementById("ie-only-container").style.display = "block";
     }
                                                                if (isRetroZilla()) {
