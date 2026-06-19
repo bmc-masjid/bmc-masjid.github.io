@@ -768,6 +768,33 @@ var maghribHourValue =
         return ver !== null && ver <= 9;
     }
 
+   function getOperaVersion() {
+    var ua = navigator.userAgent;
+
+    if (ua.indexOf("Opera") === -1) return null;
+
+    var match = ua.match(/Version\/([\d.]+)/);
+    if (!match) match = ua.match(/Opera\/([\d.]+)/);
+
+    if (!match) return null;
+
+    return parseFloat(match[1]);
+}
+
+function isOldOpera() {
+    var ver = getOperaVersion();
+    if (ver === null) return false;
+
+    return ver <= 11.5;
+}
+
+function isSupportedOpera() {
+    var ver = getOperaVersion();
+    if (ver === null) return false;
+
+    return ver >= 11.6;
+}
+
     function isKmeleon15OrBelow() {
         var ua = navigator.userAgent;
         var isKM = /K-Meleon\//i.test(ua);
@@ -1010,31 +1037,44 @@ var maghribHourValue =
        INIT (SAFE BOOT)
     ========================= */
 
-    function init() {
-        updateDate();
+   function init() {
+    updateDate();
 
-        try {
-            if (isLegacyIE()) {
-                runLegacyCalculation();
-            } else {
-                runAPICalculation();
-            }
-        } catch (e) {
-            console.log("Init error, falling back", e);
+    try {
+        if (
+            isLegacyIE() ||
+            isIE9OrBelow() ||
+            isKmeleon15OrBelow() ||
+            isFirefox35OrBelow() ||
+            isRetroZilla() ||
+            isOldOpera()
+        ) {
             runLegacyCalculation();
+        } else {
+            runAPICalculation();
         }
-
-        if (isIE9OrBelow() || isKmeleon15OrBelow() || isFirefox35OrBelow() || isRetroZilla()) {
-            var el = document.getElementById("ie-only-container");
-            if (el) el.style.display = "none";
-        }
+    } catch (e) {
+        console.log("Init error, falling back", e);
+        runLegacyCalculation();
     }
 
-    if (document.addEventListener) {
-        document.addEventListener("DOMContentLoaded", init);
-    } else {
-        window.onload = init;
+    if (
+        isIE9OrBelow() ||
+        isKmeleon15OrBelow() ||
+        isFirefox35OrBelow() ||
+        isRetroZilla() ||
+        isOldOpera()
+    ) {
+        var el = document.getElementById("ie-only-container");
+        if (el) el.style.display = "none";
     }
+}
+
+if (document.addEventListener) {
+    document.addEventListener("DOMContentLoaded", init);
+} else {
+    window.onload = init;
+}
 
 })();
 </script>
