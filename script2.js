@@ -1,4 +1,4 @@
-(function () {
+(function () { 
 
     /* =========================
        BASIC IE DETECTION
