@@ -1,4 +1,4 @@
-var isIE = !!document.documentMode; // true for IE8–11
+ var isIE = !!document.documentMode; // true for IE8–11
 var ieVersion = document.documentMode || 999;
 var isIE9 = ieVersion === 9;
 var isLegacyIE = ieVersion < 10;
